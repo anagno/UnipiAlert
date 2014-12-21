@@ -10,4 +10,17 @@
     <string name="connection_error_continue">Continue without internet</string>
     <string name="connection_error_settings">Settings</string>
     
+    <string name="gps_enable">GPS is enabled</string>
+    <string name="gps_disable">GPS is disabled</string>
+    <string name="gps_location">Location is not available. Waiting for GPS &#8230;</string>
+    
+    <string name="gps_error_title">Enable GPS</string>
+    <string name="gps_error">You need GPS to use this application. 
+                    Please turn on GPS in Settings.</string>
+    <string name="gps_error_continue">Continue without GPS</string>
+    <string name="gps_error_settings">Settings</string>
+    
+    <string name="tracking_mode_on">Tracking mode was enabled</string>
+    <string name="tracking_mode_off">Tracking mode was disable</string>
+    
 </resources>
