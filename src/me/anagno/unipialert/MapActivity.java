@@ -33,7 +33,7 @@ public class MapActivity extends Activity implements LocationListener
   
   // Μεταβλητή για να καταγράφουμε αν ο χρήστης θέλει ο χάρτης
   // να ακολουθεί την τωρινή του θέση.
-  private boolean follow_current_position_ = false;
+  private boolean follow_current_position_ = false, help_enable_ = false;
   
   // Variables for the current position
   protected GeoPoint current_position_point_ ;
@@ -41,7 +41,7 @@ public class MapActivity extends Activity implements LocationListener
  
   
   // Τα κουμπιά της φόρμας
-  Button button_tracking_mode_;
+  Button button_tracking_mode_, button_help_;
   
   @Override
   protected void onCreate(Bundle savedInstanceState)
@@ -50,15 +50,20 @@ public class MapActivity extends Activity implements LocationListener
     setContentView(R.layout.activity_map);
     
     button_tracking_mode_ = (Button) findViewById(R.id.buttonTrackingMode);
+    button_help_ = (Button) findViewById (R.id.buttonHelp);
     
     map_ = (MapView) findViewById(R.id.map);
     map_controller_ = map_.getController();
     current_position_marker_= new Marker(map_);
     
     location_manager_ = (LocationManager) this.getSystemService(
-        Context.LOCATION_SERVICE);
+        Context.LOCATION_SERVICE);    
     
+    // Ενεργοποιούμε την θέση μέσω του δικτύου
+    location_manager_.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+        0, 0, this);
     
+    // Ρωτάμε τον χρήστη αν θέλει να ενεργοποιήση το GPS
     // http://stackoverflow.com/questions/24837418/checking-if-gps-is-enabled-in-android
     // Να τα ξανακοιτάξω... Δεν είναι και τόσο καλό
     if(!location_manager_.isProviderEnabled( LocationManager.GPS_PROVIDER))
@@ -96,10 +101,18 @@ public class MapActivity extends Activity implements LocationListener
     }
     else
     {
+      // http://developer.android.com/reference/android/location/LocationManager.html#requestLocationUpdates%28java.lang.String,%20long,%20float,%20android.location.LocationListener%29
       location_manager_.requestLocationUpdates(LocationManager.GPS_PROVIDER,
           0, 0, this);
       Toast.makeText(getApplicationContext(), 
           R.string.gps_enable, Toast.LENGTH_SHORT).show();
+    }
+    
+    // Χρησιμοποιούμε αν είναι διαθέσιμη η τελευταία γνωστή τοποθεσία από το δίκτυο
+    if(null != location_manager_.getLastKnownLocation(LocationManager.NETWORK_PROVIDER))
+    {
+      current_position_point_ = new GeoPoint( location_manager_.getLastKnownLocation(
+          LocationManager.NETWORK_PROVIDER) );
     }
     
     if( !isNetworkConnected() )
@@ -211,18 +224,10 @@ public class MapActivity extends Activity implements LocationListener
     map_.invalidate();
   }
   
-  public void test(View view)
-  {
-    Toast.makeText(getApplicationContext(), 
-        "current= " + current_position_point_.getLongitude() + ", " + current_position_point_.getLatitude(),
-        Toast.LENGTH_SHORT).show();
-  }
-
   @Override
   public void onStatusChanged(String provider, int status, Bundle extras)
   {
     // TODO Auto-generated method stub
-    
   }
 
   @Override
@@ -269,6 +274,24 @@ public class MapActivity extends Activity implements LocationListener
       button_tracking_mode_.setBackgroundResource(R.drawable.btn_tracking_on);
       Toast.makeText(getApplicationContext(), 
           R.string.tracking_mode_on, Toast.LENGTH_SHORT).show();
+    }      
+  }
+  
+  public void help (View view)
+  {
+    if(help_enable_)
+    {
+      help_enable_ = false;
+      button_help_.setText(R.string.help);
+      Toast.makeText(getApplicationContext(), 
+          R.string.help_message, Toast.LENGTH_SHORT).show();
+    }
+    else
+    {
+      help_enable_ = true;
+      button_help_.setText(R.string.help_abort);
+      Toast.makeText(getApplicationContext(), 
+          R.string.help_message, Toast.LENGTH_SHORT).show();
     }      
   }
   

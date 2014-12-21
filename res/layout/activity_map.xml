@@ -35,14 +35,14 @@
     	        android:background="@drawable/bth_current_position" />
 
     	    <Button
-    	        android:id="@+id/test"
+    	        android:id="@+id/buttonHelp"
     	        android:layout_width="wrap_content"
-    	        android:layout_height="wrap_content"
+    	        android:layout_height="180dip"
     	        android:layout_alignParentBottom="true"
     	        android:layout_alignParentEnd="true"
     	        android:layout_alignParentStart="true"
-    	        android:onClick="test"
-    	        android:text="test" />
+    	        android:onClick="help"
+    	        android:text="@string/help" />
 
 		</RelativeLayout>
     	    

@@ -23,4 +23,10 @@
     <string name="tracking_mode_on">Tracking mode was enabled</string>
     <string name="tracking_mode_off">Tracking mode was disable</string>
     
+    
+    <string name="help">Help</string>
+    <string name="help_abort">Abort Help</string>
+    <string name="help_message">Sending message &#8230;</string>
+
+    
 </resources>
