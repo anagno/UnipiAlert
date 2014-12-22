@@ -24,13 +24,15 @@
     <string name="tracking_mode_on">Tracking mode was enabled</string>
     <string name="tracking_mode_off">Tracking mode was disable</string>
     <string name="tracking_mode_string">Tracking mode</string>
-    
-    
+
     <string name="help">Help</string>
     <string name="help_abort">Abort Help</string>
     <string name="help_message">Sending message &#8230;</string>
-    
-    
+
     <string name="record_route">Record route</string>
+    
+    <string name="settings_phone_title">Phone number</string>
+    <string name="settings_phone_description">The phone number to which to send a 
+         sms when there is a problem</string>
     
 </resources>

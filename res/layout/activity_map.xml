@@ -13,6 +13,17 @@
             	android:id="@+id/map"
             	android:layout_width="fill_parent" 
             	android:layout_height="fill_parent" />
+    	    
+    	    <Switch
+    	    	android:id="@+id/routeSwitch"
+    	    	android:layout_width="wrap_content"
+    	    	android:layout_height="wrap_content"
+    	    	android:layout_centerHorizontal="true"
+  	            android:layout_margin="15dp"
+    	        android:layout_alignParentTop="true"
+    	    	android:checked="false"
+    	    	android:onClick="recordRoute"
+    	    	android:text="@string/record_route" />
     	       	    
     	    <Button
     	        android:id="@+id/buttonHelp"
@@ -23,6 +34,16 @@
     	        android:layout_alignParentStart="true"
     	        android:onClick="help"
     	        android:text="@string/help" />
+    	    
+    	    <Button
+    	        android:id="@+id/buttonTest"
+    	        android:layout_width="wrap_content"
+    	        android:layout_height="50dip"
+    	        android:layout_above="@+id/buttonHelp"
+    	        android:layout_alignParentEnd="true"
+    	        android:layout_alignParentStart="true"
+    	        android:onClick="acivations"
+    	        android:text="activations" />
 
 		</RelativeLayout>
     	    

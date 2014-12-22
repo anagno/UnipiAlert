@@ -12,6 +12,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -24,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.Toast;
 
 public class MapActivity extends Activity implements LocationListener
@@ -32,6 +35,10 @@ public class MapActivity extends Activity implements LocationListener
   protected MapView map_;
   protected IMapController map_controller_;
   protected LocationManager location_manager_;
+  
+  private Switch route_switch_;
+  private SQLiteDatabase db_;
+  private int route_count_ = 0; //Για να μετράμε τα group των συντεταγμένων
   
   // Μεταβλητή για να καταγράφουμε αν ο χρήστης θέλει ο χάρτης
   // να ακολουθεί την τωρινή του θέση.
@@ -54,6 +61,30 @@ public class MapActivity extends Activity implements LocationListener
     // Getting the prefrerensces
     SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
     
+    db_ = openOrCreateDatabase ("places_2", Context.MODE_PRIVATE,null);
+    db_.execSQL("CREATE TABLE IF NOT EXISTS places ("
+             + "count INTEGER, "
+             + "longitude REAL, "
+             + "latitude REAL, "
+             + "time TIMESTAMP DEFAULT CURRENT_TIMESTAMP );");
+    
+    db_.execSQL("CREATE TABLE IF NOT EXISTS description ("
+        + "count INTEGER, "
+        + "description TEXT );");
+    
+    Cursor c = db_.rawQuery("SELECT MAX(count) FROM places ",null);
+    
+    if(c.moveToFirst())
+    {
+      route_count_ = c.getInt(0); //Για να βρίσκουμε 
+                             // την μέγιστη τιμή που έχει ήδη καταχωρηθεί 
+    }
+    
+    Toast.makeText(getApplicationContext(), 
+        "route count: " + route_count_ ,
+        Toast.LENGTH_SHORT).show();
+    
+    route_switch_= (Switch) findViewById (R.id.routeSwitch);
     button_help_ = (Button) findViewById (R.id.buttonHelp);
     
     map_ = (MapView) findViewById(R.id.map);
@@ -246,9 +277,13 @@ public class MapActivity extends Activity implements LocationListener
   public void onLocationChanged(Location location)
   {
     current_position_point_ = new GeoPoint(location);
-    Toast.makeText(getApplicationContext(), 
-        "current= " + current_position_point_.getLongitude() + ", " + current_position_point_.getLatitude(),
-        Toast.LENGTH_SHORT).show();
+    if(!route_switch_.isChecked())
+    {
+      //Toast.makeText(getApplicationContext(), 
+      //    "position: " + current_position_point_.getLongitude() + ", " + current_position_point_.getLatitude(),
+      //    Toast.LENGTH_SHORT).show();
+    }
+          
     
     if(follow_current_position_)
     {
@@ -260,6 +295,29 @@ public class MapActivity extends Activity implements LocationListener
     current_position_marker_.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
     map_.getOverlays().add(current_position_marker_);
     map_.invalidate();
+    
+    // Άμα είναι ενεργοποιημένος ο διακόπτης να καταγράφετε η θέση
+    if(route_switch_.isChecked())
+    {
+      db_.execSQL("Insert INTO places(count,longitude,latitude) VALUES("
+          + "'" + route_count_ + "',"
+          + "'" + current_position_point_.getLongitude()+ "',"
+          + "'" + current_position_point_.getLatitude() +"');");
+      
+      Cursor query = db_.rawQuery("SELECT * FROM description WHERE "
+          + "count = '" + route_count_ +"'", null);
+      
+      if (!query.moveToFirst())
+      {
+        db_.execSQL("Insert INTO description(count,description) VALUES("
+            + "'" + route_count_ + "',"
+            + "'" + this.getString(R.string.record_route) + " " + route_count_ +"');");
+      }
+      
+      //Toast.makeText(getApplicationContext(), 
+      //    "route count: " + route_count_ +" - position: " + current_position_point_.getLongitude() + ", " + current_position_point_.getLatitude(),
+      //    Toast.LENGTH_SHORT).show();
+    }
   }
   
   @Override
@@ -301,7 +359,38 @@ public class MapActivity extends Activity implements LocationListener
     }      
   }
   
+  public void recordRoute(View v)
+  {
+    if (route_switch_.isChecked())
+    {
+      ++route_count_;
+    }
+  }
   
+  public void acivations(View v)
+  {
+    Cursor c = db_.rawQuery("SELECT * FROM description", null);
+    
+    if (c.getCount() == 0)
+    {
+      Toast.makeText(getApplicationContext(), 
+          "No values were found", Toast.LENGTH_LONG).show();
+    }
+    
+    StringBuffer buffer = new StringBuffer();
+    
+    while (c.moveToNext())
+    {
+      buffer.append("route count: " + c.getString(0) + "\n");
+      buffer.append("description: " + c.getString(1) + "\n");
+      buffer.append("\n");
+    }
+    
+    Toast.makeText(getApplicationContext(), 
+        buffer.toString(), Toast.LENGTH_LONG).show();
+    
+  }
+    
   //private void stopGps()
   //{
   //  location_manager_.removeUpdates(this);
