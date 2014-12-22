@@ -29,6 +29,8 @@
     <string name="help">Help</string>
     <string name="help_abort">Abort Help</string>
     <string name="help_message">Sending message &#8230;</string>
-
+    
+    
+    <string name="record_route">Record route</string>
     
 </resources>
