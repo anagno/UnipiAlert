@@ -15,26 +15,6 @@
             	android:layout_height="fill_parent" />
     	       	    
     	    <Button
-            	android:id="@+id/buttonTrackingMode"
-            	android:layout_width="50dip"
-            	android:layout_height="50dip"
-				android:layout_margin="5dp"
-            	android:layout_alignParentTop="true"
-            	android:layout_alignParentEnd="true"
-            	android:onClick="trackingMode"
-            	android:background="@drawable/btn_tracking_off" />
-    	    
-    	    <Button
-    	        android:id="@+id/buttonCurrentPosition"
-    	        android:layout_width="50dip"
-    	        android:layout_height="50dip"
-    	        android:layout_margin="5dp"
-    	        android:layout_alignParentTop="true"
-    	        android:layout_toStartOf="@+id/buttonTrackingMode"
-    	        android:onClick="currentPosition"
-    	        android:background="@drawable/bth_current_position" />
-
-    	    <Button
     	        android:id="@+id/buttonHelp"
     	        android:layout_width="wrap_content"
     	        android:layout_height="180dip"

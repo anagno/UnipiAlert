@@ -41,7 +41,7 @@ public class MapActivity extends Activity implements LocationListener
  
   
   // Τα κουμπιά της φόρμας
-  Button button_tracking_mode_, button_help_;
+  Button button_help_;
   
   @Override
   protected void onCreate(Bundle savedInstanceState)
@@ -49,7 +49,6 @@ public class MapActivity extends Activity implements LocationListener
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_map);
     
-    button_tracking_mode_ = (Button) findViewById(R.id.buttonTrackingMode);
     button_help_ = (Button) findViewById (R.id.buttonHelp);
     
     map_ = (MapView) findViewById(R.id.map);
@@ -196,14 +195,46 @@ public class MapActivity extends Activity implements LocationListener
     // Handle action bar item clicks here. The action bar will
     // automatically handle clicks on the Home/Up button, so long
     // as you specify a parent activity in AndroidManifest.xml.
-    int id = item.getItemId();
-    if (id == R.id.action_settings)
+    switch(item.getItemId())
     {
-      return true;
+      case R.id.itemCurrentPosition:
+        if (null != current_position_point_)
+        {
+          map_controller_.animateTo(current_position_point_);
+          map_controller_.setCenter(current_position_point_);
+          map_controller_.setZoom(17);   
+        }
+        else
+        {
+          Toast.makeText(getApplicationContext(), 
+              R.string.gps_location, Toast.LENGTH_SHORT).show();
+        }
+        return true;        
+      case R.id.itemTrackingMode:
+        if(follow_current_position_)
+        {
+          follow_current_position_ = false;
+          item.setIcon(R.drawable.btn_tracking_off);
+          Toast.makeText(getApplicationContext(), 
+              R.string.tracking_mode_off, Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+          follow_current_position_ = true;
+          item.setIcon(R.drawable.btn_tracking_on);
+          Toast.makeText(getApplicationContext(), 
+              R.string.tracking_mode_on, Toast.LENGTH_SHORT).show();
+        } 
+        return true;        
+      case R.id.action_settings:
+        //TODO
+        return true;
+      default:
+        return super.onOptionsItemSelected(item);
     }
-    return super.onOptionsItemSelected(item);
-  }
 
+  }
+   
   @Override
   public void onLocationChanged(Location location)
   {
@@ -244,38 +275,6 @@ public class MapActivity extends Activity implements LocationListener
     
   }
   
-  public void currentPosition(View view)
-  {
-    if (null != current_position_point_)
-    {
-      map_controller_.animateTo(current_position_point_);
-      map_controller_.setCenter(current_position_point_);
-      map_controller_.setZoom(17);   
-    }
-    else
-    {
-      Toast.makeText(getApplicationContext(), 
-          R.string.gps_location, Toast.LENGTH_SHORT).show();
-    }
-  }
-  
-  public void trackingMode (View view)
-  {
-    if(follow_current_position_)
-    {
-      follow_current_position_ = false;
-      button_tracking_mode_.setBackgroundResource(R.drawable.btn_tracking_off);
-      Toast.makeText(getApplicationContext(), 
-          R.string.tracking_mode_off, Toast.LENGTH_SHORT).show();
-    }
-    else
-    {
-      follow_current_position_ = true;
-      button_tracking_mode_.setBackgroundResource(R.drawable.btn_tracking_on);
-      Toast.makeText(getApplicationContext(), 
-          R.string.tracking_mode_on, Toast.LENGTH_SHORT).show();
-    }      
-  }
   
   public void help (View view)
   {

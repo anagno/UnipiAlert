@@ -1,11 +1,24 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="me.anagno.unipialert.MapActivity" >
+    
+    <item
+    	android:id="@+id/itemCurrentPosition"
+    	android:title="@string/gps_string"
+    	android:icon="@drawable/bth_current_position"    	
+    	android:showAsAction="ifRoom"/>
+    
+    <item
+        android:id="@+id/itemTrackingMode"
+        android:title="@string/tracking_mode_string"
+        android:icon="@drawable/btn_tracking_off"
+        android:showAsAction="ifRoom" android:checkable="true"/>
 
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/action_settings"/>
+    
 
 </menu>
