@@ -61,7 +61,7 @@ public class MapActivity extends Activity implements LocationListener
     // Getting the prefrerensces
     SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
     
-    db_ = openOrCreateDatabase ("places_2", Context.MODE_PRIVATE,null);
+    db_ = openOrCreateDatabase ("places", Context.MODE_PRIVATE,null);
     db_.execSQL("CREATE TABLE IF NOT EXISTS places ("
              + "count INTEGER, "
              + "longitude REAL, "
@@ -261,11 +261,15 @@ public class MapActivity extends Activity implements LocationListener
           Toast.makeText(getApplicationContext(), 
               R.string.tracking_mode_on, Toast.LENGTH_SHORT).show();
         } 
-        return true;        
+        return true;
+      case R.id.itemRoutes:
+        Intent intent_routes = new Intent(this, RoutesActivity.class);
+        startActivity(intent_routes);
+        return true;
       case R.id.action_settings:
         //TODO
-        Intent i = new Intent(this, SettingsActivity.class);
-        startActivity(i);
+        Intent intent_settings = new Intent(this, SettingsActivity.class);
+        startActivity(intent_settings);
         return true;
       default:
         return super.onOptionsItemSelected(item);
@@ -367,6 +371,7 @@ public class MapActivity extends Activity implements LocationListener
     }
   }
   
+  // Πρόχειρη συνάρτηση
   public void acivations(View v)
   {
     Cursor c = db_.rawQuery("SELECT * FROM description", null);

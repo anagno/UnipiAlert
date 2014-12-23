@@ -12,7 +12,14 @@
         android:id="@+id/itemTrackingMode"
         android:title="@string/tracking_mode_string"
         android:icon="@drawable/btn_tracking_off"
-        android:showAsAction="ifRoom" android:checkable="true"/>
+        android:showAsAction="ifRoom" 
+        android:checkable="true"/>
+    
+    <item
+    	android:id="@+id/itemRoutes"
+    	android:title="@string/routes"
+    	android:icon="@drawable/btn_route"    	
+    	android:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_settings"
