@@ -38,5 +38,12 @@
     <string name="title_activity_routes">Recorded routes</string>
     <string name="map_clear">Clear map</string>
     
+    <string name="phone_complete">Please fill the phone number in the 
+        settings</string>
+    <string name="phone_location_error">No available location yet. Please wait and try again.</string>    
+    <string name="phone_help_message">I need help. I am XX_1 North and XX_2 East.</string>  
+    <string name="phone_abort_help_message">I am fine. Alarm off</string>    
+    <string name="phone_sms_fail">Sms failed. Please try again later.</string>    
+    
 
 </resources>

@@ -2,6 +2,7 @@ package me.anagno.unipialert;
 
 import me.anagno.unipialert.R.drawable;
 
+import org.osmdroid.ResourceProxy.string;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.overlays.Marker;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -25,6 +26,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.telephony.SmsManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,6 +40,10 @@ public class MapActivity extends Activity implements LocationListener
   protected MapView map_;
   protected IMapController map_controller_;
   protected LocationManager location_manager_;
+  
+  //Getting the prefrerensces
+  SharedPreferences settings_;
+  
   
   private Switch route_switch_;
   private SQLiteDatabase db_;
@@ -62,7 +68,7 @@ public class MapActivity extends Activity implements LocationListener
     setContentView(R.layout.activity_map);
     
     // Getting the prefrerensces
-    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+    settings_ = PreferenceManager.getDefaultSharedPreferences(this);
     
     db_ = openOrCreateDatabase ("places", Context.MODE_PRIVATE,null);
     db_.execSQL("CREATE TABLE IF NOT EXISTS places ("
@@ -82,11 +88,7 @@ public class MapActivity extends Activity implements LocationListener
       route_count_ = c.getInt(0); //Για να βρίσκουμε 
                              // την μέγιστη τιμή που έχει ήδη καταχωρηθεί 
     }
-    
-    Toast.makeText(getApplicationContext(), 
-        "route count: " + route_count_ ,
-        Toast.LENGTH_SHORT).show();
-    
+       
     route_switch_= (Switch) findViewById (R.id.routeSwitch);
     button_help_ = (Button) findViewById (R.id.buttonHelp);
     
@@ -331,6 +333,9 @@ public class MapActivity extends Activity implements LocationListener
     }
   }
    
+  // Να κοιτάξω 
+  // http://stackoverflow.com/questions/6181704/good-way-of-getting-the-users-location-in-android
+  // http://developer.android.com/guide/topics/location/strategies.html
   @Override
   public void onLocationChanged(Location location)
   {
@@ -403,17 +408,73 @@ public class MapActivity extends Activity implements LocationListener
   {
     if(help_enable_)
     {
+      try
+      {
+        String phone_number = settings_.getString("preferences_phone", "error");
+        
+        Intent send_intent = new Intent (Intent.ACTION_VIEW);
+        send_intent.putExtra("sms_body", this.getString(R.string.phone_abort_help_message));
+        send_intent.putExtra("address", phone_number);
+        send_intent.setType("vnd.android-dir/mms-sms");
+        startActivity(send_intent);
+        
+        Toast.makeText(getApplicationContext(), 
+            R.string.help_message, Toast.LENGTH_SHORT).show();
+      }
+      catch(Exception e)
+      {
+        Toast.makeText(getApplicationContext(), 
+            R.string.phone_sms_fail, Toast.LENGTH_SHORT).show();
+        return;
+      }
+      
       help_enable_ = false;
       button_help_.setText(R.string.help);
-      Toast.makeText(getApplicationContext(), 
-          R.string.help_message, Toast.LENGTH_SHORT).show();
     }
     else
     {
+      String phone_number = settings_.getString("preferences_phone", "error");
+      
+      //matches numbers only          
+      if(!phone_number.matches("^[0-9]*$"))
+      {
+        Toast.makeText(getApplicationContext(), 
+            R.string.phone_abort_help_message, Toast.LENGTH_SHORT).show();
+        return;
+      }
+      
+      if(current_position_point_ == null)
+      {
+        Toast.makeText(getApplicationContext(), 
+            R.string.phone_location_error, Toast.LENGTH_SHORT).show();
+        return;
+      }
+          
+      String message = this.getString(R.string.phone_help_message);   
+      message = message.replace("XX_1", String.valueOf(current_position_point_.getLatitude()));
+      message = message.replace("XX_2", String.valueOf(current_position_point_.getLongitude()));
+      
+      try
+      {
+        Intent send_intent = new Intent (Intent.ACTION_VIEW);
+        send_intent.putExtra("sms_body", message);
+        send_intent.putExtra("address", phone_number);
+        send_intent.setType("vnd.android-dir/mms-sms");
+        startActivity(send_intent);
+        
+        Toast.makeText(getApplicationContext(), 
+            R.string.help_message, Toast.LENGTH_SHORT).show();
+      }
+      catch(Exception e)
+      {
+        Toast.makeText(getApplicationContext(), 
+            R.string.phone_sms_fail, Toast.LENGTH_SHORT).show();
+        return;
+      }   
+      
       help_enable_ = true;
-      button_help_.setText(R.string.help_abort);
-      Toast.makeText(getApplicationContext(), 
-          R.string.help_message, Toast.LENGTH_SHORT).show();
+      button_help_.setText(R.string.help_abort);  
+      
     }      
   }
   
@@ -424,32 +485,7 @@ public class MapActivity extends Activity implements LocationListener
       ++route_count_;
     }
   }
-  
-  // Πρόχειρη συνάρτηση
-  public void acivations(View v)
-  {
-    Cursor c = db_.rawQuery("SELECT * FROM description", null);
-    
-    if (c.getCount() == 0)
-    {
-      Toast.makeText(getApplicationContext(), 
-          "No values were found", Toast.LENGTH_LONG).show();
-    }
-    
-    StringBuffer buffer = new StringBuffer();
-    
-    while (c.moveToNext())
-    {
-      buffer.append("route count: " + c.getString(0) + "\n");
-      buffer.append("description: " + c.getString(1) + "\n");
-      buffer.append("\n");
-    }
-    
-    Toast.makeText(getApplicationContext(), 
-        buffer.toString(), Toast.LENGTH_LONG).show();
-    
-  }
-    
+      
   //private void stopGps()
   //{
   //  location_manager_.removeUpdates(this);

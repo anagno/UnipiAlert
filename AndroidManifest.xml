@@ -15,6 +15,9 @@
 
     <!-- permission needed for the gps -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    
+    <!-- permission needed for sending the sms -->
+    <uses-permission android:name="android.permission.SEND_SMS"/>
 
     <application
         android:allowBackup="true"
