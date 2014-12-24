@@ -26,9 +26,17 @@
     <string name="record_route">Record route</string>
     <string name="routes">Routes</string>
     <string name="routes_no_values">No routes were found</string>
+    <string name="routes_delete">Delete</string>
+    <string name="routes_edit">Edit</string>    
+    <string name="routes_edit_title">Edit description</string>
+    <string name="routes_edit_message">Please enter the new description</string>
+    <string name="routes_edit_ok">OK</string>
+    <string name="routes_edit_cancel">Cancel</string> 
     <string name="settings_phone_title">Phone number</string>
     <string name="settings_phone_description">The phone number to which to send a 
          sms when there is a problem</string>
     <string name="title_activity_routes">Recorded routes</string>
+    <string name="map_clear">Clear map</string>
+    
 
 </resources>

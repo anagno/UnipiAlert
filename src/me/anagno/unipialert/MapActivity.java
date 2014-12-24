@@ -1,5 +1,7 @@
 package me.anagno.unipialert;
 
+import me.anagno.unipialert.R.drawable;
+
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.overlays.Marker;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -14,6 +16,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -264,7 +267,14 @@ public class MapActivity extends Activity implements LocationListener
         return true;
       case R.id.itemRoutes:
         Intent intent_routes = new Intent(this, RoutesActivity.class);
-        startActivity(intent_routes);
+        startActivityForResult(intent_routes,1);
+        return true;
+      case R.id.itemClearMap:
+        map_.getOverlays().clear();
+        current_position_marker_.setPosition(current_position_point_);
+        current_position_marker_.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        map_.getOverlays().add(current_position_marker_);
+        map_.invalidate();
         return true;
       case R.id.action_settings:
         //TODO
@@ -275,6 +285,50 @@ public class MapActivity extends Activity implements LocationListener
         return super.onOptionsItemSelected(item);
     }
 
+  }
+  
+  //http://stackoverflow.com/questions/920306/sending-data-back-to-the-main-activity-in-android
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data)
+  {
+    super.onActivityResult(requestCode, resultCode, data);
+    switch(requestCode)
+    {
+      // Δηλώθηκε στο startActivityForResult(intent_routes,1);
+      case (1):
+      {
+        if(resultCode == Activity.RESULT_OK)
+        {
+          // Δηλώθηκε στο Routes Activity 
+          int result = data.getIntExtra("returned_route", 0);
+          
+          Cursor cursor_place = db_.rawQuery("SELECT * FROM places WHERE "
+              + "count ='" + result + "'", null);
+          
+          Cursor cursor_descrition = db_.rawQuery("SELECT * FROM description WHERE "
+              + "count ='" + result + "'", null);
+          
+          Toast.makeText(getApplicationContext(), 
+              "Record: " + result + " (" + cursor_descrition.getCount() +")", Toast.LENGTH_LONG).show();
+          
+          Drawable node_icon = getResources().getDrawable(R.drawable.marker_node);
+          cursor_descrition.moveToFirst();
+          while(cursor_place.moveToNext())
+          {
+            Marker node = new Marker(map_);
+            node.setPosition(new GeoPoint(cursor_place.getDouble(2), cursor_place.getDouble(1)));
+            node.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            node.setIcon(node_icon);
+            node.setSnippet(cursor_descrition.getString(1));
+            map_.getOverlays().add(node);
+          } 
+          map_.invalidate();
+        }
+        break;
+      }
+      default:
+        break;
+    }
   }
    
   @Override

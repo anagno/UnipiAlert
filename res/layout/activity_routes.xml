@@ -9,7 +9,7 @@
     tools:context="me.anagno.unipialert.RoutesActivity" >
     
     <ListView
-    	android:id="@+id/listViewRoute"
+    	android:id="@android:id/list"
         android:layout_height="wrap_content"
         android:layout_width="match_parent">
    </ListView>
