@@ -20,8 +20,8 @@
     <string name="tracking_mode_on">Tracking mode was enabled</string>
     <string name="tracking_mode_off">Tracking mode was disable</string>
     <string name="tracking_mode_string">Tracking mode</string>
-    <string name="help">Help</string>
-    <string name="help_abort">Abort Help</string>
+    <string name="help">Send sms for help</string>
+    <string name="help_abort">Abort sms for help</string>
     <string name="help_message">Sending message &#8230;</string>
     <string name="record_route">Record route</string>
     <string name="routes">Routes</string>
@@ -43,7 +43,7 @@
     <string name="phone_location_error">No available location yet. Please wait and try again.</string>    
     <string name="phone_help_message">I need help. I am XX_1 North and XX_2 East.</string>  
     <string name="phone_abort_help_message">I am fine. Alarm off</string>    
-    <string name="phone_sms_fail">Sms failed. Please try again later.</string>    
+    <string name="phone_sms_fail">Sms failed. Look your settings and please try again later.</string>    
     
 
 </resources>

@@ -1,8 +1,5 @@
 package me.anagno.unipialert;
 
-import me.anagno.unipialert.R.drawable;
-
-import org.osmdroid.ResourceProxy.string;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.bonuspack.overlays.Marker;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -412,11 +409,15 @@ public class MapActivity extends Activity implements LocationListener
       {
         String phone_number = settings_.getString("preferences_phone", "error");
         
-        Intent send_intent = new Intent (Intent.ACTION_VIEW);
-        send_intent.putExtra("sms_body", this.getString(R.string.phone_abort_help_message));
-        send_intent.putExtra("address", phone_number);
-        send_intent.setType("vnd.android-dir/mms-sms");
-        startActivity(send_intent);
+        //Intent send_intent = new Intent (Intent.ACTION_VIEW);
+        //send_intent.putExtra("sms_body", this.getString(R.string.phone_abort_help_message));
+        //send_intent.putExtra("address", phone_number);
+        //send_intent.setType("vnd.android-dir/mms-sms");
+        //startActivity(send_intent);
+        
+        SmsManager sms_manager = SmsManager.getDefault();
+        
+        sms_manager.sendTextMessage(phone_number, null, this.getString(R.string.phone_abort_help_message), null, null);
         
         Toast.makeText(getApplicationContext(), 
             R.string.help_message, Toast.LENGTH_SHORT).show();
@@ -456,11 +457,16 @@ public class MapActivity extends Activity implements LocationListener
       
       try
       {
-        Intent send_intent = new Intent (Intent.ACTION_VIEW);
-        send_intent.putExtra("sms_body", message);
-        send_intent.putExtra("address", phone_number);
-        send_intent.setType("vnd.android-dir/mms-sms");
-        startActivity(send_intent);
+        //Intent send_intent = new Intent (Intent.ACTION_VIEW);
+        // send_intent.putExtra("sms_body", message);
+        // send_intent.putExtra("address", phone_number);
+        // send_intent.setType("vnd.android-dir/mms-sms");
+        // startActivity(send_intent);
+        
+        SmsManager sms_manager = SmsManager.getDefault();
+        
+        sms_manager.sendTextMessage(phone_number, null, message, null, null);
+        
         
         Toast.makeText(getApplicationContext(), 
             R.string.help_message, Toast.LENGTH_SHORT).show();
