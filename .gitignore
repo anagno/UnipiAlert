@@ -45,3 +45,10 @@ local.properties
 .target
 # TeXlipse plugin
 .texlipse
+
+doc/references/*
+
+doc/bin/*
+!doc/bin/*.pdf
+
+doc/references.bib.bak
